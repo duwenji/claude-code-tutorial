@@ -1,0 +1,31 @@
+{
+  "sourceRoot": "./docs",
+  "outputDir": "./ebook-output",
+  "projectName": "claude-code-tutorial",
+  "formats": [
+    "epub",
+    "pdf",
+    "kdp-markdown"
+  ],
+  "metadataFile": "./.github/skills-config/ebook-build/claude-code-tutorial.metadata.yaml",
+  "kdpMetadataFile": "./.github/skills-config/ebook-build/claude-code-tutorial.kdp.yaml",
+  "chapterDirPattern": "^\\d{2}-",
+  "chapterFilePattern": "^(?!00-README\\.md$).+\\.md$",
+  "headingNumbering": true,
+  "tocDepth": 2,
+  "coverFile": "00-COVER.md",
+  "coverTemplateMode": "auto",
+  "coverTemplate": "classic",
+  "collectAssets": true,
+  "normalizeManuscript": true,
+  "requireManuscriptApproval": false,
+  "approvalTokenFile": "./ebook-output/claude-code-tutorial.manuscript.approved",
+  "generateManuscriptReviewReport": false,
+  "manuscriptReviewReviewer": "automated-baseline",
+  "manuscriptReviewDecision": "Approve",
+  "mermaidMode": "required",
+  "mermaidFormat": "png",
+  "failOnMermaidError": true,
+  "mermaidConfigFile": "./.github/skills-config/ebook-build/mermaid.epub.config.json",
+  "mermaidPuppeteerConfigFile": "./.github/skills-config/ebook-build/mermaid.puppeteer.config.json"
+}

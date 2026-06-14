@@ -1,0 +1,31 @@
+title: Claude Code 完全実践ガイド
+subtitle: スキル・フック・メモリ・MCP を使いこなす
+creator: 杜 文吉
+language: ja-JP
+rights: Copyright (c) 杜 文吉
+date: 2026-06-14
+toc: true
+toc-depth: 2
+publisher: Duwenji Lab
+identifier: claude-code-tutorial
+description: >
+  Anthropic の AI コーディングアシスタント Claude Code を基礎から応用まで体系的に学ぶ実践ガイド。
+  スキルシステム・フック自動化・メモリ管理・MCP/エージェント連携の4大機能を完全カバー。
+keywords:
+  - claude code
+  - ai coding assistant
+  - anthropic
+  - developer tools
+  - automation
+subject:
+  - software engineering
+  - artificial intelligence
+chapters:
+  dir-titles:
+    00-fundamentals: 基礎と環境準備
+    01-core-features: コア機能
+    02-skills: スキルシステム
+    03-hooks-automation: フックと自動化
+    04-memory-system: メモリシステム
+    05-mcp-agents: MCP とエージェント
+    06-advanced: 発展・応用

@@ -1,0 +1,10 @@
+{
+  "name": "claude-code-tutorial",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ebook:step1": "powershell -ExecutionPolicy Bypass -File ./.github/skills-config/ebook-build/invoke-build.ps1 -BuildStep step1",
+    "ebook:step2": "powershell -ExecutionPolicy Bypass -File ./.github/skills-config/ebook-build/invoke-build.ps1 -BuildStep step2",
+    "ebook:step3": "powershell -ExecutionPolicy Bypass -File ./.github/skills-config/ebook-build/invoke-build.ps1 -BuildStep step3"
+  }
+}
