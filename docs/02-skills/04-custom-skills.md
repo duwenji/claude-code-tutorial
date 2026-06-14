@@ -8,7 +8,7 @@
 
 ## SKILL.md テンプレート
 
-```markdown
+````markdown
 ---
 name: deploy-check
 description: デプロイ前に環境変数・ビルド・テストをチェックします。deploy, production, リリースという言葉で起動します。
@@ -60,7 +60,7 @@ npm test
 
 ## 出力形式
 Markdown の表形式でチェック結果を表示する。全項目✅の場合のみ「デプロイ可」と表示する。
-```
+````
 
 ## 配置とテスト
 
@@ -95,7 +95,7 @@ description: >
 
 曖昧な指示より、具体的な出力形式を定義するほうが一貫した結果が得られます：
 
-```markdown
+````markdown
 ## 出力形式
 
 必ず以下の JSON 形式で出力すること：
@@ -112,6 +112,7 @@ description: >
   "summary": "全体のサマリー"
 }
 ```
+````
 
 ### 失敗ケースを明示する
 

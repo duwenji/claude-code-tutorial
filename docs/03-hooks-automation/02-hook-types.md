@@ -213,7 +213,7 @@ UserPromptSubmit の stdin には `{"prompt": "...", "permission_mode": "..."}` 
 | パターン | マッチするツール |
 |---------|--------------|
 | `"Edit"` | Edit ツールのみ |
-| `"Edit|Write"` | Edit または Write（`\|` のエスケープ不要） |
+| `"Edit\|Write"` | Edit または Write（`\|` でエスケープして記述） |
 | `"Bash"` | 全 Bash コマンド |
 | `"Bash(git *)"` | git で始まる Bash のみ |
 | `"mcp__memory__.*"` | memory サーバーの全ツール（正規表現） |

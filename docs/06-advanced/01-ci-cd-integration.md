@@ -87,6 +87,28 @@ main().catch(console.error);
 
 ## GitLab CI での使用
 
+### GitLab CI の基本概念
+
+GitLab CI は `.gitlab-ci.yml` という1つのファイルでパイプライン全体を定義します。
+
+| 用語 | 意味 | GitHub Actions との対応 |
+|------|------|------------------------|
+| **Pipeline** | CI 全体の実行単位 | Workflow |
+| **Stage** | パイプラインの段階（例: build → test → review） | - |
+| **Job** | 各ステージ内の個別タスク | Job |
+| **Runner** | ジョブを実行するサーバー | Runner |
+| **Merge Request (MR)** | コードレビューの単位 | Pull Request (PR) |
+
+### API キーの設定方法
+
+GitLab プロジェクトの **Settings → CI/CD → Variables** で以下を登録します：
+
+| 変数名 | 値 | オプション |
+|--------|----|----------|
+| `ANTHROPIC_API_KEY` | `sk-ant-...` | Masked（ログに表示しない） |
+
+### 基本設定
+
 ```yaml
 # .gitlab-ci.yml
 ai-review:
@@ -101,6 +123,54 @@ ai-review:
   only:
     - merge_requests
 ```
+
+### 設定の各項目の意味
+
+| キー | 説明 |
+|------|------|
+| `stage: review` | `stages:` で定義したステージの1つに配置する |
+| `image: node:20` | ジョブを実行する Docker イメージ（Node.js 20） |
+| `script:` | 実行するシェルコマンドのリスト（上から順に実行） |
+| `variables:` | ジョブ内で使う環境変数（`$変数名` で GitLab CI 変数を参照） |
+| `only: merge_requests` | マージリクエストが作成・更新されたときだけ実行 |
+
+### 複数ステージを使った実践的な構成
+
+```yaml
+# .gitlab-ci.yml（マルチステージ版）
+stages:
+  - build
+  - test
+  - review   # ← AI レビューはここ
+  - deploy
+
+ai-review:
+  stage: review
+  image: node:20
+  script:
+    - npm install -g @anthropic-ai/claude-code
+    - git diff origin/main...HEAD > /tmp/pr.diff
+    - node scripts/review.js
+  variables:
+    ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY
+  artifacts:
+    paths:
+      - review-report.json   # レポートを次のジョブに引き継ぐ
+    expire_in: 1 week
+  only:
+    - merge_requests
+```
+
+> **ポイント**: `artifacts` を使うとレビュー結果ファイルを保存・ダウンロードできます。
+
+### GitLab と GitHub Actions の比較
+
+| 項目 | GitLab CI | GitHub Actions |
+|------|-----------|----------------|
+| 設定ファイル | `.gitlab-ci.yml`（1ファイル） | `.github/workflows/*.yml`（複数可） |
+| トリガー | `only: merge_requests` | `on: pull_request:` |
+| シークレット | Settings → CI/CD → Variables | Settings → Secrets |
+| セルフホスト実行環境 | GitLab Runner | Self-hosted Runner |
 
 ## 品質ゲートとしての使用
 

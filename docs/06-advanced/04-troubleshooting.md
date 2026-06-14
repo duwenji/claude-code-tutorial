@@ -10,12 +10,28 @@
 
 ```bash
 # 確認
-which claude
-npm list -g @anthropic-ai/claude-code
-
-# 再インストール
-npm install -g @anthropic-ai/claude-code
+which claude       # macOS/Linux
+claude --version   # インストール確認
+claude doctor      # 自動診断
 ```
+
+**再インストール**（ネイティブインストーラーが推奨）:
+
+```bash
+# macOS/Linux
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Windows PowerShell
+irm https://claude.ai/install.ps1 | iex
+
+# Homebrew (macOS)
+brew install --cask claude-code
+
+# WinGet (Windows)
+winget install Anthropic.ClaudeCode
+```
+
+インストール先: `~/.local/bin/claude`（macOS/Linux）/ `%USERPROFILE%\.local\bin\claude.exe`（Windows）
 
 **症状**: `ANTHROPIC_API_KEY` が未設定
 
@@ -93,7 +109,7 @@ cat ~/.claude/settings.json | grep -A 10 mcpServers
 **よくある原因**:
 - `npx` のパスが通っていない
 - 環境変数（API キー等）が未設定
-- Node.js のバージョンが古い（18 以上が必要）
+- Node.js のバージョンが古い（npm 経由インストールの場合は 18 以上が必要）
 
 ---
 
@@ -104,7 +120,8 @@ cat ~/.claude/settings.json | grep -A 10 mcpServers
 **解決策**:
 1. 重要な指示は CLAUDE.md に書く
 2. メモリに保存する（`> これを覚えておいて`）
-3. 長いタスクは小さく分割して `/clear` を挟む
+3. `/compact` でコンテキストを圧縮しながら会話を継続する
+4. 長いタスクは小さく分割して `/clear` を挟む
 
 ---
 
@@ -112,7 +129,13 @@ cat ~/.claude/settings.json | grep -A 10 mcpServers
 
 **症状**: `PostToolUse` フックが実行されない
 
-**デバッグ方法**:
+**まず試すこと**:
+```
+/doctor
+```
+インストール・設定・MCP・コンテキストの状態を自動チェックしてくれる。
+
+**ログを使ったデバッグ方法**:
 
 ```json
 {
@@ -152,10 +175,18 @@ tail -f /tmp/claude-hooks.log
 
 ### Windows での文字化け
 
-**症状**: 日本語が文字化けする
+**症状**: 日本語が文字化けする、文字が豆腐（□）になる
 
-```bash
-# PowerShell のエンコーディングを設定
+**VS Code / Cursor の統合ターミナルで発生する場合**:
+
+セッション内で以下を実行すると GPU レンダラーが無効化される：
+```
+/terminal-setup
+```
+
+**PowerShell のエンコーディング設定**（一般的な文字化けの場合）:
+
+```powershell
 $OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 ```
@@ -167,7 +198,19 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 詳細なログを出力するには：
 
 ```bash
-CLAUDE_DEBUG=true claude
+# コマンドラインフラグ（推奨）
+claude --debug
+
+# 環境変数
+DEBUG=1 claude
+```
+
+セッション起動後は `/debug` コマンドでも切り替え可能。
+
+診断レポートを確認したい場合は：
+
+```bash
+claude doctor
 ```
 
 ---
@@ -176,6 +219,7 @@ CLAUDE_DEBUG=true claude
 
 | リソース | URL |
 |---------|-----|
-| 公式ドキュメント | https://docs.anthropic.com/claude-code |
+| 公式ドキュメント | https://code.claude.com/docs/ |
 | GitHub Issues | https://github.com/anthropics/claude-code/issues |
 | Claude Code ガイド | `/help` コマンドで確認 |
+| フィードバック送信 | `/feedback` コマンドで直接報告 |

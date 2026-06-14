@@ -18,7 +18,7 @@
 | `/context` | コンテキスト使用状況を可視化 |
 | `/config` | 設定を対話的に変更（`/settings` でも可） |
 | `/status` | バージョン・モデル・アカウント・接続状態を表示 |
-| `/fast [on\|off]` | Fast モード（Claude Opus 高速版）の切り替え |
+| `/fast` `on`\|`off` | Fast モード（Claude Opus 高速版）の切り替え |
 | `/model [model]` | AI モデルを切り替え |
 | `/effort [level]` | 努力レベルを調整（low / medium / high / xhigh / max） |
 | `/exit` | Claude Code を終了 |

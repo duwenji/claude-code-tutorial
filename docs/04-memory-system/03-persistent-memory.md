@@ -48,15 +48,60 @@ Claude: 保存しました。
 
 ## MEMORY.md インデックス
 
-各メモリへのポインタとなるインデックスファイルです：
+各メモリへのポインタとなるインデックスファイルです。セッション開始時に必ず読み込まれるため、200行以内に収めるのが目安です：
 
 ```markdown
 # Memory Index
 
-- [user-role](user-role.md) — フルスタック開発者、React/Go 専門
-- [feedback-testing](feedback-testing.md) — テストは Vitest のみ使用
-- [project-auth](project-auth.md) — 認証モジュール移行プロジェクト（2026-06）
-- [reference-design](reference-design.md) — Figma ファイルの場所
+## ユーザー
+- [user-role](user-role.md) — フルスタック開発者、React/TypeScript + Go 専門、Docker○ Kubernetes学習中
+
+## フィードバック
+- [feedback-no-trailing-summary](feedback-no-trailing-summary.md) — レスポンス末尾のサマリー不要（diff を直接確認するため）
+- [feedback-testing](feedback-testing.md) — テストフレームワークは Vitest のみ使用、Jest 禁止
+
+## プロジェクト
+- [project-auth](project-auth.md) — 認証モジュール JWT→Session 移行中（期限: 2026-06-30）
+- [project-freeze](project-freeze.md) — 2026-06-20 以降マージ凍結（モバイルリリース対応）
+
+## 参照
+- [reference-design](reference-design.md) — Figma "Product v3" ファイル、Linear "Frontend" プロジェクト
+```
+
+### 対応するメモリファイルのサンプル
+
+MEMORY.md の各行が指すファイルはこのような内容になります：
+
+**`feedback-testing.md`**
+
+```markdown
+---
+name: feedback-testing
+description: テストフレームワークは Vitest のみ（Jest 使用禁止）
+metadata:
+  type: feedback
+---
+
+テストは必ず Vitest を使う。Jest は使わない。
+
+**Why:** 昨年 Jest のモックが本番と挙動が異なり、リリース後に障害が発生した。
+**How to apply:** テストコードを書くとき・修正するとき全般に適用。
+```
+
+**`project-auth.md`**
+
+```markdown
+---
+name: project-auth
+description: 認証モジュール書き換えプロジェクト（期限 2026-06-30）
+metadata:
+  type: project
+---
+
+認証モジュールを JWT から Session-based に移行中。期限: 2026-06-30。
+
+**Why:** セキュリティ監査でセッション管理の不備が指摘された（コンプライアンス要件）。
+**How to apply:** 認証関連の変更はセッション方式を前提に提案する。エルゴノミクスより準拠を優先。
 ```
 
 ## メモリの確認

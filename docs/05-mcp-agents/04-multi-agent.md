@@ -15,18 +15,30 @@
 | 専門的なレビュー | 役割特化したエージェントを使い分け |
 | 大規模コードベース | 並列に異なる部分を分析 |
 
-## Claude Code での使い方
+## 2つの利用方法
 
-メインの会話から Agent ツールでサブエージェントを起動します：
+マルチエージェントには **用途が異なる2つの呼び出し方**があります：
+
+| 方法 | 誰が呼び出すか | コードは必要か | 用途 |
+|------|--------------|-------------|------|
+| **チャット（自動）** | Claude が自動判断 | 不要 | Claude Code を使う日常作業 |
+| **Agent SDK（直接）** | 自分のスクリプト | 必要（TypeScript/JS） | 独自アプリに組み込む場合 |
+
+## Claude Code での使い方（チャット・コード不要）
+
+チャットで指示するだけで、Claude が自動的にサブエージェントを起動します。ユーザー側でコードを書く必要はありません。
 
 ```
 > src/components/ 以下の全コンポーネントをセキュリティレビューして。
 > 並列で複数のエージェントを使って高速化して
 ```
 
-Claude Code は自動的にサブエージェントを起動します。
+Claude Code は指示を解釈し、内部で Agent ツールを呼び出して並列実行します。
 
-## Agent SDK でのマルチエージェント
+## Agent SDK でのマルチエージェント（独自アプリに組み込む場合）
+
+> **前提**: 独自のスクリプトやアプリから Claude Code を制御したい場合に使います。
+> 日常的なチャット作業には不要です。
 
 ```typescript
 import { query } from "@anthropic-ai/claude-code";
@@ -45,15 +57,19 @@ async function parallelReview(files: string[]) {
     )
   );
 
+  // query() は { result: string, ... } を返す。result がエージェントの最終出力テキスト
   return reviews.map((r) => JSON.parse(r.result));
 }
 
-// 使用例
+// 使用例：3ファイルを並列レビューし、JSON 配列として結果を受け取る
 const results = await parallelReview([
   "src/auth/login.ts",
   "src/auth/session.ts",
   "src/api/users.ts",
 ]);
+// results[0] → login.ts のレビュー結果オブジェクト
+// results[1] → session.ts のレビュー結果オブジェクト
+// results[2] → users.ts のレビュー結果オブジェクト
 ```
 
 ## オーケストレーターとサブエージェントのパターン
