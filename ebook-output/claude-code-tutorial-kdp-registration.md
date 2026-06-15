@@ -10,7 +10,11 @@
 | Field | Value |
 |---|---|
 | Title | Claude Code 完全実践ガイド |
+| Title Pronunciation | クロードコード カンゼンジッセンガイド |
+| Title Romanized | Kurōdo Kōdo Kanzen Jissen Gaido |
 | Subtitle | スキル・フック・メモリ・MCP を使いこなす |
+| Subtitle Pronunciation | スキル・フック・メモリ・エムシーピー ヲ ツカイコナス |
+| Subtitle Romanized | Sukiru Fukku Memori Emu Shī Pī wo Tsukaikonasu |
 | Author | 杜 文吉 |
 | Language | ja-JP |
 | Publisher | Duwenji Lab |
@@ -35,8 +39,9 @@
 
 ## 4. Categories (up to 3)
 
-- Computers / Software Development
-- Computers / Programming
+- Computers & Technology / Artificial Intelligence / Machine Learning
+- Computers & Technology / Programming / Software Design, Testing & Engineering
+- Computers & Technology / Internet & Web / Web Services & APIs
 
 ## 5. Pricing and Distribution
 
