@@ -4,7 +4,7 @@
 
 ## 手書き SKILL.md の基本
 
-`/skill-creator` を使わず、テキストエディタで直接 SKILL.md を作成することもできます。シンプルなスキルや、細かい制御が必要な場合に適しています。
+`/skill-creator` プラグインを使わず、テキストエディタで直接 SKILL.md を作成することもできます。シンプルなスキルや、細かい制御が必要な場合に適しています。
 
 ## SKILL.md テンプレート
 
@@ -73,6 +73,20 @@ claude
 /deploy-check
 ```
 
+## フロントマターの全フィールド
+
+フロントマターの全フィールドはオプションです。よく使うフィールドは以下の通りです：
+
+| フィールド | 説明 |
+|-----------|------|
+| `name` | 一覧表示名（コマンド名はディレクトリ名から決まる） |
+| `description` | 自動起動の判断に使う説明（**推奨**） |
+| `disable-model-invocation` | `true` でユーザーのみ起動可に |
+| `allowed-tools` | 承認なしで使えるツール |
+| `context` | `fork` でサブエージェント実行 |
+| `argument-hint` | 補完時のヒント（例：`[filename]`） |
+| `paths` | スキルが有効なファイルパターン（glob） |
+
 ## ベストプラクティス
 
 ### description を充実させる
@@ -90,6 +104,40 @@ description: >
   "deploy", "デプロイ", "production", "リリース", "本番" という
   言葉が出たときに自動的に提案します。
 ```
+
+`description` と `when_to_use` フィールドの合計は 1,536 文字で切り捨てられます。重要なキーワードを先頭に置いてください。
+
+### 手動起動専用にする
+
+デプロイ・コミットなど副作用のある操作は自動起動させないようにします：
+
+```yaml
+---
+name: deploy
+description: アプリを本番環境にデプロイします
+disable-model-invocation: true
+---
+```
+
+### 引数を受け取る
+
+```yaml
+---
+name: fix-issue
+description: GitHub Issue を修正します
+disable-model-invocation: true
+---
+
+GitHub Issue $ARGUMENTS をコーディング規約に従って修正する。
+
+1. Issue の内容を読む
+2. 要件を把握する
+3. 修正を実装する
+4. テストを書く
+5. コミットを作成する
+```
+
+`/fix-issue 123` と入力すると `$ARGUMENTS` が `123` に置換されます。
 
 ### 明確な出力形式を定義する
 
@@ -124,25 +172,50 @@ description: >
 - タイムアウト（30秒以上）の場合: 中断してユーザーに通知
 ```
 
-### 補助ファイルの活用
+### SKILL.md を簡潔に保つ
 
-複雑なスキルは補助スクリプトを分離できます：
+`SKILL.md` は 500 行以内を目安にします。詳細なリファレンスは別ファイルに分離して参照します：
 
 ```
 .claude/skills/deploy-check/
 ├── SKILL.md
-├── scripts/
-│   ├── check-env.sh
-│   └── run-security-scan.sh
-└── references/
-    └── deployment-checklist.md
+├── references/
+│   └── deployment-checklist.md
+└── scripts/
+    ├── check-env.sh
+    └── run-security-scan.sh
 ```
 
 `SKILL.md` 内で参照する：
 ```markdown
 ## 環境変数チェック
+詳細は [references/deployment-checklist.md](references/deployment-checklist.md) を参照。
 `scripts/check-env.sh` を実行して環境変数の状態を確認する。
 ```
+
+### 動的コンテキスト注入
+
+`` !`コマンド` `` 構文でシェルコマンドを実行し、出力を SKILL.md に埋め込めます：
+
+```yaml
+---
+name: summarize-changes
+description: 未コミットの変更を要約します
+---
+
+## 現在の変更
+!`git diff HEAD`
+
+## 指示
+上記の差分を2〜3点で要約し、リスク（エラー処理漏れ・ハードコード値等）を列挙する。
+```
+
+## スキルのテスト方法
+
+1. **直接呼び出し**: `/deploy-check` で手動テスト
+2. **自動起動テスト**: スキルの `description` に合う言葉で会話し、自動起動するか確認
+3. **フレッシュセッションで確認**: 新しいセッションでテストして作成時のコンテキストの影響を排除
+4. **skill-creator プラグイン**: 定量的な評価が必要な場合はプラグインを使う（[2-2](02-skill-creator.md) 参照）
 
 ## スキルの共有
 
@@ -159,6 +232,13 @@ description: >
 mkdir -p ~/.claude/skills/my-workflow/
 # SKILL.md を作成
 ```
+
+## 🏋️ 練習問題
+
+1. **【確認】** SKILL.md の `description` フィールドが重要な理由を説明してください。
+2. **【実践】** 自分のよく使う作業（例：PR 説明文の生成）をカスタムスキルとして作成してみましょう。
+3. **【実践】** 作成したスキルを `.claude/skills/` に配置し、スラッシュコマンドで呼び出しましょう。
+4. **【応用】** スキルの `description` にトリガーキーワードを含めることで、どのようなメリットがありますか？
 
 ## 次のステップ
 
