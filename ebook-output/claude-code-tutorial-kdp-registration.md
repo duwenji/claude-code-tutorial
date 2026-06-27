@@ -1,6 +1,6 @@
 # KDP Registration Package: Claude Code 完全実践ガイド
 
-- Generated: 2026-06-14 21:19:40
+- Generated: 2026-06-27 21:52:16
 - Project: claude-code-tutorial
 - Metadata: C:\Dev\tutorials\claude-code-tutorial\.\.github\skills-config\ebook-build\claude-code-tutorial.metadata.yaml
 - KDP Metadata: C:\Dev\tutorials\claude-code-tutorial\.\.github\skills-config\ebook-build\claude-code-tutorial.kdp.yaml
@@ -10,11 +10,11 @@
 | Field | Value |
 |---|---|
 | Title | Claude Code 完全実践ガイド |
-| Title Pronunciation | クロードコード カンゼンジッセンガイド |
-| Title Romanized | Kurōdo Kōdo Kanzen Jissen Gaido |
+| Title Pronunciation | — |
+| Romanized Title | — |
 | Subtitle | スキル・フック・メモリ・MCP を使いこなす |
-| Subtitle Pronunciation | スキル・フック・メモリ・エムシーピー ヲ ツカイコナス |
-| Subtitle Romanized | Sukiru Fukku Memori Emu Shī Pī wo Tsukaikonasu |
+| Subtitle Pronunciation | — |
+| Romanized Subtitle | — |
 | Author | 杜 文吉 |
 | Language | ja-JP |
 | Publisher | Duwenji Lab |
@@ -39,9 +39,8 @@
 
 ## 4. Categories (up to 3)
 
-- Computers & Technology / Artificial Intelligence / Machine Learning
-- Computers & Technology / Programming / Software Design, Testing & Engineering
-- Computers & Technology / Internet & Web / Web Services & APIs
+- Computers / Software Development
+- Computers / Programming
 
 ## 5. Pricing and Distribution
 
