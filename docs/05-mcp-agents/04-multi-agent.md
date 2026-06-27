@@ -78,6 +78,7 @@ const results = await parallelReview([
 ```python
 # Python
 import asyncio
+import json
 from claude_agent_sdk import query, ClaudeAgentOptions
 
 async def review_file(file: str) -> str:
