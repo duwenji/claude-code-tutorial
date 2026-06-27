@@ -4,11 +4,66 @@
 
 ## 概要
 
-Claude Code を CI/CD パイプラインに組み込むことで、コードレビューや品質チェックを自動化できます。
+Claude Code を CI/CD パイプラインに組み込むことで、コードレビューや品質チェックを自動化できます。公式の `claude-code-action` を使うと、GitHub PR やイシューへの `@claude` メンションをトリガーにして AI による自動実装・レビューが行えます。
 
 ## GitHub Actions での基本的な使い方
 
-### PR 自動コードレビュー
+### クイックセットアップ（推奨）
+
+Claude Code のターミナルで以下を実行すると、GitHub App のインストールからワークフロー設定まで対話式に完結します：
+
+```
+/install-github-app
+```
+
+> **注意**: リポジトリの管理者権限が必要です。Amazon Bedrock や Google Vertex AI を使用する場合は後述の手動セットアップが必要です。
+
+### 手動セットアップ
+
+1. **Claude GitHub App をインストール**: [https://github.com/apps/claude](https://github.com/apps/claude)
+   - 必要な権限: Contents・Issues・Pull requests（Read & Write）
+2. **`ANTHROPIC_API_KEY` をリポジトリシークレットに追加**
+3. **ワークフローファイルをコピー**: [examples/claude.yml](https://github.com/anthropics/claude-code-action/blob/main/examples/claude.yml)
+
+### 基本ワークフロー（`@claude` メンション対応）
+
+```yaml
+# .github/workflows/claude.yml
+name: Claude Code
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # PR/イシューコメントで @claude を呼ぶと自動で応答する
+```
+
+コメントで `@claude` をメンションするだけで Claude が動作します：
+
+```
+@claude この機能を実装して
+@claude このバグを修正して
+@claude セキュリティレビューをお願い
+```
+
+### PR 自動コードレビュー（スケジュール実行）
+
+PR が開かれたタイミングで自動的にレビューを実行する場合は `prompt` パラメーターを使います：
 
 ```yaml
 # .github/workflows/ai-review.yml
@@ -24,34 +79,22 @@ jobs:
     permissions:
       pull-requests: write
       contents: read
-
     steps:
       - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
         with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install Claude Code
-        run: npm install -g @anthropic-ai/claude-code
-
-      - name: Run AI Review
-        run: |
-          git diff origin/main...HEAD > /tmp/pr.diff
-          node scripts/review.js
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "この PR をレビューして。バグ・セキュリティ・パフォーマンスの問題を報告して"
+          claude_args: "--max-turns 5"
 ```
 
-### レビュースクリプト
+### Claude Agent SDK を使ったカスタム統合
+
+より高度なカスタム処理が必要な場合は、`@anthropic-ai/claude-agent-sdk` を使ってスクリプトを書きます：
 
 ```javascript
 // scripts/review.js
-const { query } = require("@anthropic-ai/claude-code");
+const { query } = require("@anthropic-ai/claude-agent-sdk");
 const { Octokit } = require("@octokit/rest");
 const fs = require("fs");
 
@@ -179,34 +222,11 @@ ai-review:
 ```yaml
 # GitHub Actions
 - name: AI Security Gate
-  run: |
-    node scripts/security-gate.js
-  env:
-    ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-# セキュリティ問題があれば exit 1 でジョブを失敗させる
-```
-
-```javascript
-// scripts/security-gate.js
-const { query } = require("@anthropic-ai/claude-code");
-
-async function securityGate() {
-  const result = await query({
-    prompt: "このブランチの変更をセキュリティレビューして。HIGH 以上の問題があれば FAIL と出力して",
-    options: {
-      allowedTools: ["Read", "Grep", "Glob"],
-      maxTurns: 10,
-    },
-  });
-
-  if (result.result.includes("FAIL")) {
-    console.error("Security gate failed");
-    process.exit(1);
-  }
-
-  console.log("Security gate passed");
-}
+  uses: anthropics/claude-code-action@v1
+  with:
+    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    prompt: "このブランチの変更をセキュリティレビューして。HIGH 以上の問題があれば最後に SECURITY_GATE_FAILED と出力して"
+    claude_args: "--max-turns 5"
 ```
 
 ## コスト管理
@@ -215,10 +235,43 @@ CI/CD で使用する場合はコストに注意：
 
 | 戦略 | 説明 |
 |------|------|
-| maxTurns を制限 | `maxTurns: 3〜5` で制限 |
-| 軽量モデルを使う | `claude-haiku-4-5-20251001` を CI/CD に |
+| `--max-turns` を制限 | `claude_args: "--max-turns 5"` でターン数を制限 |
+| 軽量モデルを使う | `claude_args: "--model claude-haiku-4-5"` を CI/CD に |
 | 変更ファイルのみ対象 | diff ファイルのみを読む |
-| キャッシュを活用 | 変更がないファイルはスキップ |
+| ワークフロータイムアウト設定 | 暴走ジョブを防ぐために `timeout-minutes` を設定 |
+| 並列実行数を制限 | GitHub の concurrency 設定でコスト上限を管理 |
+
+## Amazon Bedrock / Google Vertex AI での利用
+
+企業環境では、`ANTHROPIC_API_KEY` の代わりに自社クラウドを使用できます：
+
+```yaml
+# Amazon Bedrock の場合
+- uses: anthropics/claude-code-action@v1
+  with:
+    use_bedrock: "true"
+    claude_args: '--model us.anthropic.claude-sonnet-4-6 --max-turns 10'
+  # AWS 認証は configure-aws-credentials@v4 アクションで事前設定
+
+# Google Vertex AI の場合
+- uses: anthropics/claude-code-action@v1
+  with:
+    use_vertex: "true"
+    claude_args: '--model claude-sonnet-4-5@20250929 --max-turns 10'
+  env:
+    ANTHROPIC_VERTEX_PROJECT_ID: ${{ steps.auth.outputs.project_id }}
+    CLOUD_ML_REGION: us-east5
+```
+
+## 🏋️ 練習問題
+
+1. **【確認】** GitHub Actions で Claude Code を使う際、リポジトリシークレットに設定が必要な環境変数名を答えてください。また、`/install-github-app` コマンドで何ができるか説明してください。
+
+2. **【実践】** `claude-code-action@v1` を使った GitHub Actions ワークフロー（PR 作成時に自動でコードレビューを実行）を作成してみましょう。`prompt` パラメーターと `claude_args` の両方を使ってください。
+
+3. **【実践】** `@anthropic-ai/claude-agent-sdk` の `query` 関数を使った CI スクリプトを書いてみましょう。`allowedTools` と `maxTurns` を設定して、diff をレビューするサンプルを実装してください。
+
+4. **【応用】** Claude Code を CI に組み込む際のコスト管理のポイントを2つ挙げてください。`claude_args` でどのように制御できるかも合わせて説明してください。
 
 ## 次のステップ
 
