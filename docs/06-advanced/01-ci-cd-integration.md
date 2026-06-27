@@ -158,7 +158,7 @@ ai-review:
   stage: review
   image: node:20
   script:
-    - npm install -g @anthropic-ai/claude-code
+    - npm install -g @anthropic-ai/claude-agent-sdk
     - git diff origin/main...HEAD > /tmp/pr.diff
     - node scripts/review.js
   variables:
@@ -191,7 +191,7 @@ ai-review:
   stage: review
   image: node:20
   script:
-    - npm install -g @anthropic-ai/claude-code
+    - npm install -g @anthropic-ai/claude-agent-sdk
     - git diff origin/main...HEAD > /tmp/pr.diff
     - node scripts/review.js
   variables:
