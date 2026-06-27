@@ -74,12 +74,14 @@ Windows では **PowerShell が主要シェル**として動作するため、`g
 
 ## 利用できる環境
 
-- **CLI**: ネイティブインストーラーまたは npm でインストール（詳細は次章）
-- **VS Code 拡張**: Marketplace から「Claude Code」を検索
-- **JetBrains プラグイン**: JetBrains Marketplace から入手
-- **Desktop App**: Mac / Windows 対応
-- **Web**: claude.ai/code
-- **iOS アプリ**: Claude アプリ経由で利用可能
+- **CLI（ターミナル）**: ネイティブインストーラーまたは npm でインストール（詳細は次章）
+- **VS Code 拡張**: Marketplace から「Claude Code」を検索（Cursor でも利用可能）
+- **JetBrains プラグイン**: JetBrains Marketplace から入手（IntelliJ IDEA・PyCharm・WebStorm 等）
+- **Desktop App**: Mac（Intel / Apple Silicon）・Windows（x64 / ARM64）対応
+- **Web**: [claude.ai/code](https://claude.ai/code) でブラウザから利用（ローカルセットアップ不要）
+- **iOS アプリ**: Claude iOS アプリ経由でクラウドセッションを開始・継続可能
+- **CI/CD**: GitHub Actions・GitLab CI/CD と連携してコードレビューを自動化
+- **Slack**: `@Claude` にメンションしてタスクをルーティング可能
 
 ## Claude Code が得意なこと
 
@@ -92,6 +94,16 @@ Windows では **PowerShell が主要シェル**として動作するため、`g
 | テスト生成 | ユニットテスト・統合テストの自動生成 |
 | ドキュメント作成 | コメント・README の生成 |
 | Git 操作 | コミット・PR 作成の補助 |
+| マルチエージェント | 複数のサブエージェントを生成して並行作業 |
+| 定期タスク自動化 | スケジュール実行（ルーティン）で繰り返し作業を自動化 |
+| MCP 連携 | Google Drive・Jira・Slack などの外部ツールと接続 |
+
+## 🏋️ 練習問題
+
+1. **【確認】** Claude Code が「単なるチャットボット」と異なる点を2つ挙げてください。
+2. **【確認】** Claude Code の設計原則3つを説明してください。
+3. **【実践】** Claude Code と GitHub Copilot の違いを、自分のユースケースに当てはめて考えてみましょう。どの機能が最も役立ちそうですか？
+4. **【応用】** あなたが日常のコーディング作業でよく行うタスク（デバッグ、コードレビューなど）を1つ選び、Claude Code がどう支援できるか想像してみましょう。
 
 ## 次のステップ
 
