@@ -82,15 +82,15 @@
 
 ```json
 {
-  "model": "claude-opus-4-8"
+  "model": "claude-opus-4-6"
 }
 ```
 
 | モデル | 特徴 |
 |-------|------|
-| `claude-opus-4-8` | 最高性能 |
+| `claude-opus-4-6` | 最高性能 |
 | `claude-sonnet-4-6` | バランス型（デフォルト） |
-| `claude-haiku-4-5-20251001` | 高速・低コスト |
+| `claude-haiku-4-5` | 高速・低コスト |
 
 ### permissions
 
