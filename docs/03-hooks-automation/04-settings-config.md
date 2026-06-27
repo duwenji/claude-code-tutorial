@@ -2,13 +2,18 @@
 
 > **学習時間**: 15分 | **難易度**: ⭐⭐
 
-## settings.json の場所
+## settings.json の場所と優先順位
 
 | ファイル | 適用範囲 | 用途 |
 |---------|---------|------|
-| `~/.claude/settings.json` | グローバル | 全プロジェクト共通 |
+| マネージドポリシー設定 | 組織全体 | IT 管理者が展開（上書き不可） |
+| `~/.claude/settings.json` | グローバル | 全プロジェクト共通の個人設定 |
 | `.claude/settings.json` | プロジェクト | チームで共有する設定 |
 | `.claude/settings.local.json` | プロジェクトローカル | 個人設定（git 管理外） |
+
+**優先順位（高い順）**: マネージドポリシー > コマンドライン引数 > ローカル設定 > プロジェクト設定 > ユーザー設定
+
+なお、`permissions` ルールはスコープをまたいで**マージ**されます（上書きではありません）。
 
 ## 完全な設定例
 
@@ -40,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx prettier --write \"$CLAUDE_TOOL_OUTPUT_PATH\" 2>/dev/null || true"
+            "command": "bash -c 'FILE=$(cat | jq -r .tool_input.file_path); npx prettier --write \"$FILE\" 2>/dev/null || true'"
           }
         ]
       }
@@ -89,13 +94,14 @@
 
 ### permissions
 
-ツールの自動承認・拒否を設定します：
+ツールの自動承認・拒否・確認要求を設定します：
 
 ```json
 {
   "permissions": {
     "allow": ["Bash(git *)", "Read(**)"],
-    "deny": ["Bash(rm -rf *)"]
+    "deny": ["Bash(rm -rf *)"],
+    "ask": ["Bash(npm publish *)"]
   }
 }
 ```
@@ -155,7 +161,7 @@ UI テーマを設定します：
       {
         "matcher": "Edit|Write",
         "hooks": [
-          { "type": "command", "command": "npm run format 2>/dev/null || true" }
+          { "type": "command", "command": "bash -c 'FILE=$(cat | jq -r .tool_input.file_path); npm run format -- \"$FILE\" 2>/dev/null || true'" }
         ]
       }
     ]
@@ -192,6 +198,23 @@ UI テーマを設定します：
 ```
 /config
 ```
+
+## フックの一時無効化
+
+全フックを一時的に無効化するには `disableAllHooks` を使います：
+
+```json
+{
+  "disableAllHooks": true
+}
+```
+
+## 🏋️ 練習問題
+
+1. **【確認】** `~/.claude/settings.json` と `.claude/settings.json` のどちらが優先されますか？
+2. **【実践】** `permissions.allow` に `["Bash(git *)"]` を追加して、git コマンドを確認なしで実行できるようにしましょう。
+3. **【実践】** `model` フィールドでデフォルトモデルを変更してみましょう。
+4. **【応用】** チームで共有する `.claude/settings.json` に含めるべき設定と、個人の `settings.local.json` に留めるべき設定の違いを説明してください。
 
 ## 次のステップ
 

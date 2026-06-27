@@ -4,7 +4,7 @@
 
 ## PreToolUse
 
-ツールが実行される直前に発火します。ツールへの入力は **stdin から JSON** として渡されます。ブロックするには `permissionDecision: "deny"` を含む JSON を stdout に出力します（exit code 2 でも stderr メッセージと共にブロック可能）。
+ツールが実行される直前に発火します。ツールへの入力は **stdin から JSON** として渡されます。ブロックするには `permissionDecision: "deny"` を含む JSON を stdout に出力するか、**exit code 2** を返します（exit code 2 の場合は stderr メッセージがトランスクリプトに表示されツールはブロックされます）。
 
 ### 設定例: rm -rf をブロック
 
@@ -208,6 +208,58 @@ UserPromptSubmit の stdin には `{"prompt": "...", "permission_mode": "..."}` 
 
 ---
 
+## SubagentStop
+
+サブエージェントが処理を完了したときに発火します。`matcher` にはエージェントタイプを指定できます。
+
+### 設定例: サブエージェント完了を通知
+
+```json
+{
+  "hooks": {
+    "SubagentStop": [
+      {
+        "matcher": "Explore",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Explore エージェントが完了しました'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+---
+
+## PreCompact
+
+コンテキスト圧縮が実行される直前に発火します。`matcher` には `manual`（手動）または `auto`（自動）を指定できます。exit code 2 で圧縮をブロックできます。
+
+### 設定例: 圧縮前にログを記録
+
+```json
+{
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[$(date)] コンテキスト自動圧縮が実行されます' >> ~/.claude/compact.log"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+---
+
 ## matcher の書き方
 
 | パターン | マッチするツール |
@@ -253,6 +305,13 @@ PROMPT=$(cat | jq -r '.prompt // empty')
 | `${CLAUDE_PROJECT_DIR}` | プロジェクトルートの絶対パス |
 | `${CLAUDE_PLUGIN_ROOT}` | プラグインのインストールディレクトリ |
 | `${CLAUDE_PLUGIN_DATA}` | プラグインの永続データディレクトリ |
+
+## 🏋️ 練習問題
+
+1. **【確認】** `PreToolUse` と `PostToolUse` の違いを説明してください。
+2. **【実践】** Edit ツールの PostToolUse で `echo "file edited"` を実行するフックを設定してみましょう。
+3. **【実践】** Stop イベントで通知を出すフックを作成し、動作を確認しましょう。
+4. **【応用】** `Notification` フックを使って、モバイルに通知を送るにはどのようなコマンドが必要ですか？
 
 ## 次のステップ
 
