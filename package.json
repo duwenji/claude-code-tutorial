@@ -5,6 +5,7 @@
   "scripts": {
     "ebook:step1": "powershell -ExecutionPolicy Bypass -File ./.github/skills-config/ebook-build/invoke-build.ps1 -BuildStep step1",
     "ebook:step2": "powershell -ExecutionPolicy Bypass -File ./.github/skills-config/ebook-build/invoke-build.ps1 -BuildStep step2",
+    "ebook:step2b": "powershell -ExecutionPolicy Bypass -File ./.github/skills-config/ebook-build/invoke-build.ps1 -BuildStep step2b",
     "ebook:step3": "powershell -ExecutionPolicy Bypass -File ./.github/skills-config/ebook-build/invoke-build.ps1 -BuildStep step3"
   }
 }

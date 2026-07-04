@@ -10,7 +10,7 @@
 param(
     [string]$ConfigFile = '.github/skills-config/ebook-build/claude-code-tutorial.build.json',
     [Parameter(Mandatory = $true)]
-    [ValidateSet('step1', 'step2', 'step3')]
+    [ValidateSet('step1', 'step2', 'step2b', 'step3')]
     [string]$BuildStep
 )
 
@@ -18,11 +18,6 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
-$configFileResolved = if ([System.IO.Path]::IsPathRooted($ConfigFile)) {
-    $ConfigFile
-} else {
-    Join-Path $repoRoot $ConfigFile
-}
 
 $sharedCandidates = @(
     (Join-Path $repoRoot '../shared-copilot-skills/ebook-build'),
@@ -46,15 +41,9 @@ if (-not (Test-Path $dispatcherScript)) {
     throw "Shared dispatcher not found: $dispatcherScript"
 }
 
-Write-Host "Dispatcher script: $dispatcherScript"
-Write-Host "Invoking dispatcher with arguments:"
-Write-Host "  -RepoRoot   $repoRoot"
-Write-Host "  -ConfigFile $configFileResolved"
-Write-Host "  -BuildStep  $BuildStep"
-
 & pwsh -NoProfile -ExecutionPolicy Bypass -File $dispatcherScript `
     -RepoRoot   $repoRoot `
-    -ConfigFile $configFileResolved `
+    -ConfigFile $ConfigFile `
     -BuildStep  $BuildStep
 
 exit $LASTEXITCODE
