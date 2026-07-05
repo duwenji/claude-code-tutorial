@@ -12,20 +12,12 @@ Claude Code のオートメモリシステムは `~/.claude/projects/<project>/m
 
 ## メモリの読み込みタイミング
 
-```
-セッション開始
-    │
-    ▼
-CLAUDE.md を読み込む（全文）
-    │
-    ▼
-MEMORY.md の先頭 200 行（または 25KB）を読み込む
-    │
-    ▼
-会話開始
-    │
-    ▼
-必要に応じてトピックファイルをオンデマンドで読み込む
+```mermaid
+flowchart TD
+    A[セッション開始] --> B[CLAUDE.md を読み込む<br/>全文]
+    B --> C["MEMORY.md の先頭 200 行<br/>または 25KB を読み込む"]
+    C --> D[会話開始]
+    D --> E[必要に応じてトピックファイルを<br/>オンデマンドで読み込む]
 ```
 
 `MEMORY.md` はインデックスとして機能します。詳細なメモは `debugging.md` や `api-conventions.md` などのトピックファイルに分けて保存され、Claude が必要と判断したときに読み込まれます。

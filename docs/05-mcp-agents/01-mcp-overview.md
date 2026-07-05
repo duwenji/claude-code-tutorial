@@ -22,20 +22,12 @@ Claude Code は MCP クライアントとして動作し、MCP サーバーを�
 
 ## MCP のアーキテクチャ
 
-```
-Claude Code（MCP ホスト）
-        │
-        │ MCP クライアント（サーバーごとに1つ）
-        │
-        ├── MCP サーバー A（ローカル: stdio）
-        │        │
-        │        ▼
-        │   ローカルツール・DB 等
-        │
-        └── MCP サーバー B（リモート: Streamable HTTP）
-                 │
-                 ▼
-           クラウドサービス（GitHub / Slack 等）
+```mermaid
+flowchart TD
+    Host[Claude Code<br/>MCP ホスト] -->|MCP クライアント<br/>サーバーごとに1つ| ServerA[MCP サーバー A<br/>ローカル: stdio]
+    Host -->|MCP クライアント<br/>サーバーごとに1つ| ServerB[MCP サーバー B<br/>リモート: Streamable HTTP]
+    ServerA --> LocalTools[ローカルツール・DB 等]
+    ServerB --> Cloud["クラウドサービス<br/>GitHub / Slack 等"]
 ```
 
 MCP は2層で構成されています：

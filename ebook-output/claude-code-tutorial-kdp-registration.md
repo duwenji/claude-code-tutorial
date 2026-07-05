@@ -1,6 +1,6 @@
 # KDP Registration Package: Claude Code 完全実践ガイド
 
-- Generated: 2026-07-05 01:12:11
+- Generated: 2026-07-05 10:48:03
 - Project: claude-code-tutorial
 - Metadata: C:\Dev\tutorials\claude-code-tutorial\.\.github\skills-config\ebook-build\claude-code-tutorial.metadata.yaml
 - KDP Metadata: C:\Dev\tutorials\claude-code-tutorial\.\.github\skills-config\ebook-build\claude-code-tutorial.kdp.yaml

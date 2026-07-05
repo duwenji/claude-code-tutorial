@@ -12,20 +12,12 @@
 
 ## スキルの仕組み
 
-```
-ユーザー: 「このコードをレビューして」
-    │
-    ▼
-Claude Code が description を検索
-    │
-    ▼
-.claude/skills/code-review/SKILL.md を発見
-    │
-    ▼
-SKILL.md の手順に従ってレビュー実行
-    │
-    ▼
-構造化された出力を返す
+```mermaid
+flowchart TD
+    A["ユーザー: 「このコードをレビューして」"] --> B[Claude Code が description を検索]
+    B --> C[".claude/skills/code-review/SKILL.md を発見"]
+    C --> D[SKILL.md の手順に従ってレビュー実行]
+    D --> E[構造化された出力を返す]
 ```
 
 ## SKILL.md の構造
